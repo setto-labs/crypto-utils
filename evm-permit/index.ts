@@ -23,7 +23,8 @@ export {
   NONCES_SELECTOR,
   NAME_SELECTOR,
   ALLOWANCE_SELECTOR,
-  USDC_PERMIT_VERSION,
+  EIP712_DOMAIN_SELECTOR,
+  DEFAULT_PERMIT_VERSION,
 } from './constants';
 
 // Sign
@@ -35,4 +36,6 @@ export {
   getTokenName,
   getERC20Allowance,
   checkERC20Allowance,
+  getEip712Domain,
+  type Eip712DomainInfo,
 } from './allowance';

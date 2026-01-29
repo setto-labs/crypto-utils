@@ -5,12 +5,12 @@
  */
 
 import type {
-  EIP1193Provider,
   SignERC20PermitParams,
   SignERC20PermitResult,
   ERC20PermitSignature,
 } from './types';
-import { ERC20_PERMIT_TYPES, USDC_PERMIT_VERSION } from './constants';
+import { ERC20_PERMIT_TYPES } from './constants';
+import { getEip712Domain } from './allowance';
 
 /**
  * EIP-2612 Permit 서명 생성
@@ -70,10 +70,11 @@ export async function signERC20Permit(
 
   const signerAddress = accounts[0];
 
-  // EIP-712 도메인 (USDC는 version "2" 사용)
+  // EIP-712 도메인 (토큰마다 version이 다름 - 동적 조회)
+  const domainInfo = await getEip712Domain(provider, tokenAddress);
   const domain = {
-    name: tokenName,
-    version: USDC_PERMIT_VERSION,
+    name: domainInfo.name,
+    version: domainInfo.version,
     chainId,
     verifyingContract: tokenAddress,
   };

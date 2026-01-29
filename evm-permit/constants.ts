@@ -85,7 +85,13 @@ export const ERC20_PERMIT_TYPES = {
 };
 
 /**
- * USDC 토큰의 EIP-712 domain version
- * USDC는 "2"를 사용함 (일부 토큰은 "1")
+ * EIP-5267 eip712Domain() 함수 selector
+ * keccak256("eip712Domain()") = 0x84b0196e
  */
-export const USDC_PERMIT_VERSION = '2';
+export const EIP712_DOMAIN_SELECTOR = '0x84b0196e';
+
+/**
+ * 기본 EIP-712 domain version (fallback용)
+ * eip712Domain() 호출 실패 시 사용
+ */
+export const DEFAULT_PERMIT_VERSION = '1';
