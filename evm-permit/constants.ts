@@ -67,6 +67,12 @@ export const NAME_SELECTOR = '0x06fdde03';
  */
 export const ALLOWANCE_SELECTOR = '0xdd62ed3e';
 
+/**
+ * ERC-20 version 함수 selector
+ * keccak256("version()") = 0x54fd4d50
+ */
+export const VERSION_SELECTOR = '0x54fd4d50';
+
 // ============================================
 // EIP-712 Types
 // ============================================

@@ -11,7 +11,7 @@ import type {
   CheckERC20AllowanceParams,
   ERC20AllowanceInfo,
 } from './types';
-import { NONCES_SELECTOR, NAME_SELECTOR, ALLOWANCE_SELECTOR, EIP712_DOMAIN_SELECTOR, DEFAULT_PERMIT_VERSION } from './constants';
+import { NONCES_SELECTOR, NAME_SELECTOR, ALLOWANCE_SELECTOR, EIP712_DOMAIN_SELECTOR, VERSION_SELECTOR, DEFAULT_PERMIT_VERSION } from './constants';
 
 /**
  * ERC-20 Permit nonce 조회
@@ -167,6 +167,41 @@ export async function checkERC20Allowance(
 }
 
 /**
+ * ERC-20 토큰 version 조회
+ *
+ * @param provider EIP-1193 provider
+ * @param tokenAddress 토큰 주소
+ * @returns version 문자열 (기본값: "1")
+ */
+async function getTokenVersion(
+  provider: EIP1193Provider,
+  tokenAddress: string
+): Promise<string> {
+  try {
+    const result = (await provider.request({
+      method: 'eth_call',
+      params: [
+        {
+          to: tokenAddress,
+          data: VERSION_SELECTOR,
+        },
+        'latest',
+      ],
+    })) as string;
+
+    // ABI-encoded string 파싱
+    const hex = result.slice(2);
+    const length = parseInt(hex.slice(64, 128), 16);
+    const versionHex = hex.slice(128, 128 + length * 2);
+
+    return hexToString(versionHex);
+  } catch {
+    // version() 미지원 토큰은 기본값 사용
+    return DEFAULT_PERMIT_VERSION;
+  }
+}
+
+/**
  * EIP-712 Domain 정보
  */
 export interface Eip712DomainInfo {
@@ -214,15 +249,16 @@ export async function getEip712Domain(
 
     return decodeEip712Domain(result, tokenAddress);
   } catch {
-    // eip712Domain() 미지원 토큰은 name() 조회 + 기본값 사용
+    // eip712Domain() 미지원 토큰은 name(), version() 개별 조회
     const name = await getTokenName({ provider, tokenAddress });
+    const version = await getTokenVersion(provider, tokenAddress);
     const chainIdHex = (await provider.request({
       method: 'eth_chainId',
     })) as string;
 
     return {
       name,
-      version: DEFAULT_PERMIT_VERSION,
+      version,
       chainId: parseInt(chainIdHex, 16),
       verifyingContract: tokenAddress,
     };
