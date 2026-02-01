@@ -32,9 +32,9 @@ export interface SolanaProvider {
 // ============================================
 
 /**
- * Delegate approve TX 응답 (서버에서 받음)
+ * Delegate + Payment TX 응답 (서버에서 받음)
  */
-export interface DelegateApproveTxResponse {
+export interface DelegatePaymentTxResponse {
   /** base64 encoded unsigned transaction */
   unsigned_tx: string;
   /** blockhash */
@@ -43,13 +43,18 @@ export interface DelegateApproveTxResponse {
   blockhash_expires_at: number;
   /** Delegate PDA 주소 */
   delegate_pda: string;
-  /** Fee 수신자 주소 */
-  fee_recipient: string;
+  /** 상태 조회용 Payment ID */
+  payment_id: string;
   /** Approve 금액 (raw) */
   approve_amount: string;
   /** Fee 금액 (raw) */
   fee_amount: string;
 }
+
+/**
+ * @deprecated Use DelegatePaymentTxResponse instead
+ */
+export type DelegateApproveTxResponse = DelegatePaymentTxResponse;
 
 /**
  * TX 서명 결과

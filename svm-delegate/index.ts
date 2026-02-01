@@ -10,7 +10,8 @@
 // Types
 export type {
   SolanaProvider,
-  DelegateApproveTxResponse,
+  DelegatePaymentTxResponse,
+  DelegateApproveTxResponse, // deprecated alias
   SignedTxResult,
   DelegateAllowance,
   SignDelegateTxParams,

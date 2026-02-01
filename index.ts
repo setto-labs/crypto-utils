@@ -68,7 +68,8 @@ export {
 export {
   // Types
   type SolanaProvider,
-  type DelegateApproveTxResponse,
+  type DelegatePaymentTxResponse,
+  type DelegateApproveTxResponse, // deprecated alias
   type SignedTxResult,
   type DelegateAllowance,
   type SignDelegateTxParams,
