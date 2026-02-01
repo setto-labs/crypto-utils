@@ -28,7 +28,7 @@ export {
   NONCES_SELECTOR,
   NAME_SELECTOR,
   ALLOWANCE_SELECTOR,
-  USDC_PERMIT_VERSION,
+  DEFAULT_PERMIT_VERSION,
   // Functions
   signERC20Permit,
   isPermitValid,
