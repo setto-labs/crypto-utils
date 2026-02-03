@@ -46,6 +46,7 @@ export async function signERC20Permit(
     value,
     nonce,
     deadlineMinutes = 60,
+    signerAddress: expectedSignerAddress,
   } = params;
 
   // 현재 시간 기준 계산
@@ -68,7 +69,8 @@ export async function signERC20Permit(
     throw new Error('No connected accounts');
   }
 
-  const signerAddress = accounts[0];
+  // 서명할 주소 결정 (expectedSignerAddress가 있으면 사용, 없으면 accounts[0])
+  const signerAddress = expectedSignerAddress || accounts[0];
 
   // EIP-712 도메인 (토큰마다 version이 다름 - 동적 조회)
   const domainInfo = await getEip712Domain(provider, tokenAddress);

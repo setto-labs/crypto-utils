@@ -43,6 +43,7 @@ export async function signPermit2(
     expirationDays = 30,
     sigDeadlineMinutes = 5,
     nonce,
+    signerAddress: expectedSignerAddress,
   } = params;
 
   // 현재 시간 기준 계산
@@ -78,7 +79,8 @@ export async function signPermit2(
     throw new Error('No connected accounts');
   }
 
-  const signerAddress = accounts[0];
+  // 서명할 주소 결정 (expectedSignerAddress가 있으면 사용, 없으면 accounts[0])
+  const signerAddress = expectedSignerAddress || accounts[0];
 
   // EIP-712 도메인
   const domain = {
