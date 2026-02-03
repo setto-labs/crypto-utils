@@ -43,8 +43,12 @@ export async function signPermit2(
     expirationDays = 30,
     sigDeadlineMinutes = 5,
     nonce,
-    signerAddress: expectedSignerAddress,
+    signerAddress,
   } = params;
+
+  if (!signerAddress) {
+    throw new Error('signerAddress is required');
+  }
 
   // 현재 시간 기준 계산
   const now = Math.floor(Date.now() / 1000);
@@ -62,25 +66,6 @@ export async function signPermit2(
     spender: spenderAddress,
     sigDeadline,
   };
-
-  // 연결된 계정 가져오기
-  let accounts = (await provider.request({
-    method: 'eth_accounts',
-  })) as string[];
-
-  // 계정이 없으면 접근 권한 요청
-  if (accounts.length === 0) {
-    accounts = (await provider.request({
-      method: 'eth_requestAccounts',
-    })) as string[];
-  }
-
-  if (accounts.length === 0) {
-    throw new Error('No connected accounts');
-  }
-
-  // 서명할 주소 결정 (expectedSignerAddress가 있으면 사용, 없으면 accounts[0])
-  const signerAddress = expectedSignerAddress || accounts[0];
 
   // EIP-712 도메인
   const domain = {

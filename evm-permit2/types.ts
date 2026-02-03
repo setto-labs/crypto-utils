@@ -95,8 +95,8 @@ export interface SignPermit2Params {
   sigDeadlineMinutes?: number;
   /** 현재 nonce (on-chain에서 조회) */
   nonce: number;
-  /** 서명할 주소 (지정하지 않으면 연결된 첫 번째 계정 사용) */
-  signerAddress?: string;
+  /** 서명자 주소 (필수) */
+  signerAddress: string;
 }
 
 /**

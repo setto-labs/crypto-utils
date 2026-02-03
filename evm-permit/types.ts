@@ -89,8 +89,8 @@ export interface SignERC20PermitParams {
   nonce: number;
   /** 서명 유효 기간 (분, 기본: 60) */
   deadlineMinutes?: number;
-  /** 서명할 주소 (지정하지 않으면 연결된 첫 번째 계정 사용) */
-  signerAddress?: string;
+  /** 서명자 주소 (필수) */
+  signerAddress: string;
 }
 
 /**

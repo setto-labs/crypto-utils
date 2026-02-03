@@ -46,31 +46,16 @@ export async function signERC20Permit(
     value,
     nonce,
     deadlineMinutes = 60,
-    signerAddress: expectedSignerAddress,
+    signerAddress,
   } = params;
+
+  if (!signerAddress) {
+    throw new Error('signerAddress is required');
+  }
 
   // 현재 시간 기준 계산
   const now = Math.floor(Date.now() / 1000);
   const deadline = now + deadlineMinutes * 60;
-
-  // 연결된 계정 가져오기 (먼저 접근 권한 요청)
-  let accounts = (await provider.request({
-    method: 'eth_accounts',
-  })) as string[];
-
-  // 계정이 없으면 접근 권한 요청
-  if (accounts.length === 0) {
-    accounts = (await provider.request({
-      method: 'eth_requestAccounts',
-    })) as string[];
-  }
-
-  if (accounts.length === 0) {
-    throw new Error('No connected accounts');
-  }
-
-  // 서명할 주소 결정 (expectedSignerAddress가 있으면 사용, 없으면 accounts[0])
-  const signerAddress = expectedSignerAddress || accounts[0];
 
   // EIP-712 도메인 (토큰마다 version이 다름 - 동적 조회)
   const domainInfo = await getEip712Domain(provider, tokenAddress);
