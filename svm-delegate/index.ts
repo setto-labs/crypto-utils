@@ -2,6 +2,7 @@
  * SVM Delegate Module
  *
  * Solana SPL Token delegate 관련 기능
+ * - Delegate 상태 조회 (allowance)
  * - TX 서명
  * - Provider 찾기/연결
  * - base64 인코딩/디코딩

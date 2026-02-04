@@ -78,7 +78,7 @@ export {
   SPL_TOKEN_2022_PROGRAM_ID,
   SUPPORTED_WALLETS,
   type SupportedWallet,
-  // Functions
+  // Functions - Sign TX
   signDelegateTx,
   signDelegateTxWithTransaction,
   findConnectedProvider,
