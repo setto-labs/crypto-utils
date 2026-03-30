@@ -14,6 +14,7 @@ export type {
   SignERC20PermitResult,
   GetERC20NonceParams,
   GetTokenNameParams,
+  EIP712DomainType,
 } from './types';
 
 // Constants

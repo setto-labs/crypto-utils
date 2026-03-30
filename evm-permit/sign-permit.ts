@@ -10,12 +10,12 @@ import type {
   ERC20PermitSignature,
 } from './types';
 import { ERC20_PERMIT_TYPES } from './constants';
-import { getEip712Domain } from './allowance';
 
 /**
  * EIP-2612 Permit 서명 생성
  *
- * EIP-712 typed data 서명을 통해 ERC-20 permit 서명 생성
+ * 서버가 판별한 EIP-712 domain 정보(domainName, domainVersion, domainType)를 사용하여
+ * EIP-712 typed data 서명을 생성. standard/salt domain 분기를 지원한다.
  *
  * @param params 서명 파라미터
  * @returns Permit signature + signer address
@@ -26,11 +26,14 @@ import { getEip712Domain } from './allowance';
  *   provider,
  *   chainId: 43113,
  *   tokenAddress: '0x...',
- *   tokenName: 'USD Coin',
+ *   domainName: 'USD Coin',
+ *   domainVersion: '2',
+ *   domainType: 'standard',
  *   spenderAddress: '0x...', // SettoPayment
  *   value: '1000000', // 1 USDC (6 decimals)
  *   nonce: 0,
  *   deadlineMinutes: 60,
+ *   signerAddress: '0x...',
  * });
  * ```
  */
@@ -41,7 +44,9 @@ export async function signERC20Permit(
     provider,
     chainId,
     tokenAddress,
-    tokenName,
+    domainName,
+    domainVersion,
+    domainType,
     spenderAddress,
     value,
     nonce,
@@ -57,14 +62,40 @@ export async function signERC20Permit(
   const now = Math.floor(Date.now() / 1000);
   const deadline = now + deadlineMinutes * 60;
 
-  // EIP-712 도메인 (토큰마다 version이 다름 - 동적 조회)
-  const domainInfo = await getEip712Domain(provider, tokenAddress);
-  const domain = {
-    name: domainInfo.name,
-    version: domainInfo.version,
-    chainId,
-    verifyingContract: tokenAddress,
-  };
+  // EIP-712 domain 및 타입을 domainType에 따라 분기
+  let domain: Record<string, unknown>;
+  let eip712DomainType: Array<{ name: string; type: string }>;
+
+  if (domainType === 'salt') {
+    // Salt-based domain: bytes32(chainId) as salt, no chainId field
+    const saltHex = '0x' + chainId.toString(16).padStart(64, '0');
+    domain = {
+      name: domainName,
+      version: domainVersion,
+      verifyingContract: tokenAddress,
+      salt: saltHex,
+    };
+    eip712DomainType = [
+      { name: 'name', type: 'string' },
+      { name: 'version', type: 'string' },
+      { name: 'verifyingContract', type: 'address' },
+      { name: 'salt', type: 'bytes32' },
+    ];
+  } else {
+    // Standard domain: chainId field
+    domain = {
+      name: domainName,
+      version: domainVersion,
+      chainId,
+      verifyingContract: tokenAddress,
+    };
+    eip712DomainType = [
+      { name: 'name', type: 'string' },
+      { name: 'version', type: 'string' },
+      { name: 'chainId', type: 'uint256' },
+      { name: 'verifyingContract', type: 'address' },
+    ];
+  }
 
   // EIP-712 메시지
   const message = {
@@ -78,12 +109,7 @@ export async function signERC20Permit(
   // EIP-712 서명 요청
   const typedData = {
     types: {
-      EIP712Domain: [
-        { name: 'name', type: 'string' },
-        { name: 'version', type: 'string' },
-        { name: 'chainId', type: 'uint256' },
-        { name: 'verifyingContract', type: 'address' },
-      ],
+      EIP712Domain: eip712DomainType,
       ...ERC20_PERMIT_TYPES,
     },
     primaryType: 'Permit',

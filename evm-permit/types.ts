@@ -69,6 +69,9 @@ export interface CheckERC20AllowanceParams {
   spenderAddress: string;
 }
 
+/** EIP-712 domain type: standard (chainId) or salt (bytes32(chainId)) */
+export type EIP712DomainType = 'standard' | 'salt';
+
 /**
  * EIP-2612 Permit 서명 파라미터
  */
@@ -79,8 +82,12 @@ export interface SignERC20PermitParams {
   chainId: number;
   /** 토큰 주소 */
   tokenAddress: string;
-  /** 토큰 이름 (EIP-712 domain name) */
-  tokenName: string;
+  /** EIP-712 domain name (서버에서 받은 값) */
+  domainName: string;
+  /** EIP-712 domain version (서버에서 받은 값) */
+  domainVersion: string;
+  /** EIP-712 domain type: "standard" | "salt" */
+  domainType: EIP712DomainType;
   /** Spender 주소 (SettoPayment) */
   spenderAddress: string;
   /** 허용 금액 (wei string) */
