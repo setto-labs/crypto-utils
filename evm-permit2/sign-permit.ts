@@ -40,8 +40,8 @@ export async function signPermit2(
     tokenAddress,
     spenderAddress,
     allowanceAmount,
-    expirationDays = 30,
-    sigDeadlineMinutes = 5,
+    expiration,
+    sigDeadline,
     nonce,
     signerAddress,
   } = params;
@@ -49,11 +49,6 @@ export async function signPermit2(
   if (!signerAddress) {
     throw new Error('signerAddress is required');
   }
-
-  // 현재 시간 기준 계산
-  const now = Math.floor(Date.now() / 1000);
-  const expiration = now + expirationDays * 24 * 60 * 60;
-  const sigDeadline = now + sigDeadlineMinutes * 60;
 
   // PermitSingle 구조체 생성
   const permitSingle: PermitSingle = {
@@ -113,14 +108,3 @@ export async function signPermit2(
   };
 }
 
-/**
- * 서명 만료 확인
- *
- * @param sigDeadline 서명 유효 기간 (Unix timestamp)
- * @param bufferSeconds 버퍼 (기본: 30초)
- * @returns true if signature is still valid
- */
-export function isSignatureValid(sigDeadline: number, bufferSeconds = 30): boolean {
-  const now = Math.floor(Date.now() / 1000);
-  return sigDeadline > now + bufferSeconds;
-}

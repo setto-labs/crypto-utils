@@ -30,7 +30,6 @@ export {
   ALLOWANCE_SELECTOR,
   // Functions
   signERC20Permit,
-  isPermitValid,
   getERC20Nonce,
   getTokenName,
   getERC20Allowance,
@@ -56,7 +55,6 @@ export {
   PERMIT2_ADDRESS,
   // Functions
   signPermit2,
-  isSignatureValid,
   checkPermit2Allowance,
   isAllowanceSufficient,
 } from './evm-permit2';

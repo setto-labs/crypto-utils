@@ -34,5 +34,4 @@ export {
 // Sign Permit
 export {
   signPermit2,
-  isSignatureValid,
 } from './sign-permit';

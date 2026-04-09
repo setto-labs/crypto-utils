@@ -29,7 +29,7 @@ export {
 } from './constants';
 
 // Sign
-export { signERC20Permit, isPermitValid } from './sign-permit';
+export { signERC20Permit } from './sign-permit';
 
 // Allowance
 export {

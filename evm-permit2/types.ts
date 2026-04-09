@@ -89,10 +89,10 @@ export interface SignPermit2Params {
   spenderAddress: string;
   /** 허용 금액 (hex string, uint160) */
   allowanceAmount: string;
-  /** 만료일 (일 수, 기본: 30) */
-  expirationDays?: number;
-  /** 서명 유효 기간 (분, 기본: 5) */
-  sigDeadlineMinutes?: number;
+  /** Permit2 allowance 만료 시간 (Unix timestamp, 서버에서 전달) */
+  expiration: number;
+  /** 서명 deadline (Unix timestamp, 서버에서 전달) */
+  sigDeadline: number;
   /** 현재 nonce (on-chain에서 조회) */
   nonce: number;
   /** 서명자 주소 (필수) */

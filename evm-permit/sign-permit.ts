@@ -50,17 +50,13 @@ export async function signERC20Permit(
     spenderAddress,
     value,
     nonce,
-    deadlineMinutes = 60,
+    deadline,
     signerAddress,
   } = params;
 
   if (!signerAddress) {
     throw new Error('signerAddress is required');
   }
-
-  // 현재 시간 기준 계산
-  const now = Math.floor(Date.now() / 1000);
-  const deadline = now + deadlineMinutes * 60;
 
   // EIP-712 domain 및 타입을 domainType에 따라 분기
   let domain: Record<string, unknown>;
@@ -166,14 +162,3 @@ function parseSignature(signature: string): { v: number; r: string; s: string } 
   return { v, r, s };
 }
 
-/**
- * Permit 서명 만료 확인
- *
- * @param deadline 서명 유효 기간 (Unix timestamp)
- * @param bufferSeconds 버퍼 (기본: 30초)
- * @returns true if signature is still valid
- */
-export function isPermitValid(deadline: number, bufferSeconds = 30): boolean {
-  const now = Math.floor(Date.now() / 1000);
-  return deadline > now + bufferSeconds;
-}

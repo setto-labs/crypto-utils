@@ -94,8 +94,8 @@ export interface SignERC20PermitParams {
   value: string;
   /** 현재 nonce (on-chain에서 조회) */
   nonce: number;
-  /** 서명 유효 기간 (분, 기본: 60) */
-  deadlineMinutes?: number;
+  /** 서명 deadline (Unix timestamp, 서버에서 전달) */
+  deadline: number;
   /** 서명자 주소 (필수) */
   signerAddress: string;
 }
