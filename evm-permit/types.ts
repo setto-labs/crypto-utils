@@ -25,10 +25,10 @@ export interface EIP1193Provider {
  * ERC-20 Permit 서명 데이터 (컨트랙트 호출용)
  */
 export interface ERC20PermitSignature {
-  /** 허용 금액 (wei string) */
+  /** 허용 금액 (wei string, uint256) */
   value: string;
-  /** 서명 만료 시간 (Unix timestamp) */
-  deadline: number;
+  /** 서명 만료 시간 (Unix sec, uint256 원본 보존 string) */
+  deadline: string;
   /** ECDSA v */
   v: number;
   /** ECDSA r (hex string) */
@@ -90,12 +90,12 @@ export interface SignERC20PermitParams {
   domainType: EIP712DomainType;
   /** Spender 주소 (SettoPayment) */
   spenderAddress: string;
-  /** 허용 금액 (wei string) */
+  /** 허용 금액 (wei string, uint256) */
   value: string;
   /** 현재 nonce (on-chain에서 조회) */
   nonce: number;
-  /** 서명 deadline (Unix timestamp, 서버에서 전달) */
-  deadline: number;
+  /** 서명 deadline (Unix sec, uint256 원본 보존 string) */
+  deadline: string;
   /** 서명자 주소 (필수) */
   signerAddress: string;
 }

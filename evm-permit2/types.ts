@@ -12,12 +12,12 @@ import type { EIP1193Provider } from '../evm-permit/types';
 // ============================================
 
 /**
- * Permit2 allowance 정보 (컨트랙트에서 조회)
+ * Permit2 allowance 정보 (컨트랙트에서 조회, on-chain 값 — JS 내부 처리용)
  */
 export interface Permit2Allowance {
   /** 허용된 금액 (uint160) */
   amount: bigint;
-  /** 만료 시간 (Unix timestamp, uint48) */
+  /** 만료 시간 (Unix sec, uint48) — on-chain 조회 내부 표현 */
   expiration: number;
   /** 현재 nonce (uint48) */
   nonce: number;
@@ -33,12 +33,12 @@ export interface Permit2Allowance {
 export interface PermitDetails {
   /** 토큰 주소 */
   token: string;
-  /** 허용 금액 (uint160) */
+  /** 허용 금액 (uint160 원본 보존 string) */
   amount: string;
-  /** 만료 시간 (Unix timestamp, uint48) */
-  expiration: number;
-  /** nonce (uint48) */
-  nonce: number;
+  /** 만료 시간 (Unix sec, uint48 원본 보존 string) */
+  expiration: string;
+  /** nonce (uint48 원본 보존 string) */
+  nonce: string;
 }
 
 /**
@@ -49,8 +49,8 @@ export interface PermitSingle {
   details: PermitDetails;
   /** 허용할 spender (SettoPayment 컨트랙트) */
   spender: string;
-  /** 서명 유효 기간 (Unix timestamp) */
-  sigDeadline: number;
+  /** 서명 유효 기간 (Unix sec, uint256 원본 보존 string) */
+  sigDeadline: string;
 }
 
 // ============================================
@@ -89,12 +89,12 @@ export interface SignPermit2Params {
   spenderAddress: string;
   /** 허용 금액 (hex string, uint160) */
   allowanceAmount: string;
-  /** Permit2 allowance 만료 시간 (Unix timestamp, 서버에서 전달) */
-  expiration: number;
-  /** 서명 deadline (Unix timestamp, 서버에서 전달) */
-  sigDeadline: number;
-  /** 현재 nonce (on-chain에서 조회) */
-  nonce: number;
+  /** Permit2 allowance 만료 시간 (Unix sec, uint48 원본 보존 string) */
+  expiration: string;
+  /** 서명 deadline (Unix sec, uint256 원본 보존 string) */
+  sigDeadline: string;
+  /** 현재 nonce (uint48 원본 보존 string, on-chain에서 조회) */
+  nonce: string;
   /** 서명자 주소 (필수) */
   signerAddress: string;
 }
