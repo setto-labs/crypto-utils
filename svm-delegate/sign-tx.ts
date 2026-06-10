@@ -13,6 +13,22 @@ import type {
 import { SUPPORTED_WALLETS } from './constants';
 
 /**
+ * 지원 Solana 지갑이 window 전역에 노출하는 비표준 namespace 타입.
+ * 각 지갑마다 위치가 달라 union 으로 정의 (any 회피).
+ */
+interface SolanaWalletWindow {
+  phantom?: { solana?: SolanaProvider };
+  solflare?: SolanaProvider;
+  okxwallet?: { solana?: SolanaProvider };
+  coinbaseSolana?: SolanaProvider;
+  backpack?: { solana?: SolanaProvider };
+}
+
+function getSolanaWalletWindow(): SolanaWalletWindow {
+  return window as unknown as SolanaWalletWindow;
+}
+
+/**
  * unsigned TX 서명
  *
  * 서버에서 받은 unsigned TX를 지갑으로 서명
@@ -132,8 +148,7 @@ export function findConnectedProvider(
 ): SolanaProvider | null {
   const { expectedAddress } = params;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const win = window as any;
+  const win = getSolanaWalletWindow();
 
   // 지원하는 지갑들에서 연결된 것 찾기
   const providers: (SolanaProvider | undefined)[] = [
@@ -183,8 +198,7 @@ export async function connectSolanaWallet(
   }
 
   // 2. Phantom 먼저 시도
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const win = window as any;
+  const win = getSolanaWalletWindow();
 
   if (win.phantom?.solana) {
     try {
